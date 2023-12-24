@@ -29,15 +29,19 @@ function startup() {
     photo = document.getElementById("photo");
     startbutton = document.getElementById("startbutton");
 
-    navigator.mediaDevices
-        .getUserMedia({ video: true, audio: false })
-        .then((stream) => {
-            video.srcObject = stream;
-            video.play();
-        })
-        .catch((err) => {
-            console.error(`An error occurred: ${err}`);
-        });
+    if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+        // Access the user's camera
+        navigator.mediaDevices.getUserMedia({ video: true, audio: false })
+            .then(function (stream) {
+                video.srcObject = stream;
+                video.play();
+            })
+            .catch(function (error) {
+                console.error('Error accessing camera:', error);
+            });
+    } else {
+        console.error('getUserMedia is not supported in this browser');
+    }
 
     video.addEventListener(
         "canplay",
